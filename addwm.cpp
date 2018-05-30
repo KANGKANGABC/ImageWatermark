@@ -65,7 +65,10 @@ void array2imageDst(Image &image_dst,uchar data_dst[800*800])
     		offset_dst = image_dst.channels() * (w * row + column);
     		//pixels_dst[offset_dst + 1] = 0;
     		//pixels_dst[offset_dst + 2] = 0;
+<<<<<<< HEAD
     		//pixels_dst[offset_dst + 3] = 0;
+=======
+>>>>>>> 98848b0b320351b980b0dad537650b84a4dc8f08
     		pixels_dst[offset_dst + 0] = (data_dst[800*i+j]*(65535/255));
         }
     }
@@ -210,6 +213,7 @@ void array2image800(Image &image,uchar data[800*800])
     }
     image.syncPixels();
 }
+<<<<<<< HEAD
 void Array2Image(Image &image_src,Image &image_dst,Image image_wm,
 uchar data_src[800*800],uchar data_dst[800*800],bool data_wm[200*200])//Image Pre Processing
 {
@@ -263,6 +267,8 @@ uchar data_src[800*800],uchar data_dst[800*800],bool data_wm[200*200])//Image Pr
     image_wm.syncPixels();
     image_wm.display();
 }
+=======
+>>>>>>> 98848b0b320351b980b0dad537650b84a4dc8f08
 
 void wm1_add(Image image_src,Image image_wm,Image &image_dst)
 {

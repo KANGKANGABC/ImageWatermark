@@ -35,18 +35,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "top_test.h"
 #include "addwm.h"
 
+<<<<<<< HEAD
 #include "attack.h"
 #include "evaluate.h"
 #include "testbench.h"
 
+=======
+>>>>>>> 98848b0b320351b980b0dad537650b84a4dc8f08
 
 using namespace Magick;
 using namespace std;
 
 void GetImage(Image &image_src,Image &image_dst,Image &image_wm_src,Image &image_wm_dst)
 {
+<<<<<<< HEAD
 	image_src.read("2.png");
 	image_dst.read("2.png");
+=======
+	image_src.read("1.png");
+	image_dst.read("1.png");
+>>>>>>> 98848b0b320351b980b0dad537650b84a4dc8f08
 	image_wm_src.read("a01.png");
 	image_wm_dst.read("a01.png");
 }
@@ -65,6 +73,7 @@ int main(void)
   bool data_wm_dst[200*200];
   try {
     GetImage(image_src,image_dst,image_wm_src,image_wm_dst);
+<<<<<<< HEAD
 
     Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
     image_addwm04(data_src,data_dst,data_wm_src);
@@ -81,6 +90,23 @@ int main(void)
     //image_getwm04(image_dst,image_wm_dst);
     //getNC(&image_wm_src, &image_wm_dst);
     //image_wm_dst.display();
+=======
+//**************************************************************************************
+    Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
+    wm_fArnold(data_wm_src);
+    wm_iArnold(data_wm_src);
+    array2image200(image_wm_dst,data_wm_src);
+    image_wm_dst.display();
+
+    image_addwm04(data_src,data_dst,data_wm_src);//HLS Kernel
+    array2imageDst(image_dst,data_dst);
+    image_dst.display();
+    image_getwm04(image_dst,image_wm_dst);
+    image_wm_dst.display();
+
+//***************************************************************************************
+
+>>>>>>> 98848b0b320351b980b0dad537650b84a4dc8f08
 
   }
   catch( Exception &error_ )
