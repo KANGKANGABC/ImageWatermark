@@ -127,6 +127,8 @@ void image_getwm04(Image image_dst,Image &image_wm_dst)
         }
     }
     wm_iArnold(data_wm_dst);
+    wm_iArnold(data_wm_dst);
+    wm_iArnold(data_wm_dst);
     array2image200(image_wm_dst,data_wm_dst);
 
 }

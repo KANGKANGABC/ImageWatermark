@@ -86,6 +86,8 @@ void image_addwm04(uchar src[640000], uchar dst[640000], bool wm[200*200])
 // 1 2
 // 3 4
     wm_fArnold(wm);
+    wm_fArnold(wm);
+    wm_fArnold(wm);
     for(int i = 0;i < 100;i++)
     {
         for(int j = 0;j < 100;j++)
