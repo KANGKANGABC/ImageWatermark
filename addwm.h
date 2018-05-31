@@ -17,11 +17,6 @@ void wm2_add(Image image_src,Image image_wm,Image &image_dst);
 void wm2_detect(Image image_src,Image image_ref,Image image_wm);
 void Image2Array(Image image_src,Image image_dst,Image image_wm,
 uchar data_src[800*800],uchar data_dst[800*800],bool data_wm[200*200]);
-<<<<<<< HEAD
-void Array2Image(Image &image_src,Image &image_dst,Image image_wm,
-uchar data_src[800*800],uchar data_dst[800*800],bool data_wm[200*200]);
-=======
->>>>>>> 98848b0b320351b980b0dad537650b84a4dc8f08
 void image_getwm04(Image image_dst,Image &image_wm_dst);
 void array2imageDst(Image &image_dst,uchar data_dst[800*800]);
 void image2array800(Image image,uchar data[800*800]);
