@@ -63,8 +63,6 @@ int main(void)
     GetImage(image_src,image_dst,image_wm_src,image_wm_dst);
 //**************************************************************************************
     Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
-    array2image200(image_wm_dst,data_wm_src);
-    image_wm_dst.display();
 
     image_addwm04(data_src,data_dst,data_wm_src);//HLS Kernel
     array2imageDst(image_dst,data_dst);
