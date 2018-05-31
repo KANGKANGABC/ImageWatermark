@@ -65,13 +65,6 @@ int main(void)
 {
 
   InitializeMagick(NULL);
-  //Image image1[9];
-  //image1[0].read("1.png");
-  //image1[1].read("2.png");
-  //image1[2].read("3.png");
-  //image1[0].display();
-  //image1[1].display();
-  //image1[2].display();
 
   Image image_src[9];
   Image image_dst;
@@ -83,33 +76,18 @@ int main(void)
   bool data_wm_dst[200*200];
   try {
 	  GetImage(image_src,image_dst,image_wm_src,image_wm_dst);
-	  cout << "	PSNR	NoAttack	GaussNoise	ImpulseNoiseAttack	Rotate	Shear	Narrowing" << endl;
+	  cout << " PSNR NoAttack GaussNoise(0.01) ImpulseNoise(0.01) Rotate(10') Shear(300*200) Narrowing(400*400)" << endl;
 	  for (int i = 0; i < 9; i++)
 		  {
-		  for (int j = 0; j < 3; j++)
-		  {
-			  Image2Array(image_src[i],image_dst,image_wm_src[j],data_src,data_dst,data_wm_src);
-			  image_addwm04(data_src,data_dst,data_wm_src);
-			  array2imageDst(image_dst,data_dst);
-			  testbench(&image_src[i], &image_dst, &image_wm_src[j]);
+		  	  for (int j = 0; j < 3; j++)
+		  	  {
+		  		  cout<< "(" << i << "," << j << ") ";
+		  		  Image2Array(image_src[i],image_dst,image_wm_src[j],data_src,data_dst,data_wm_src);
+		  		  image_addwm04(data_src,data_dst,data_wm_src);
+		  		  array2imageDst(image_dst,data_dst);
+		  		  testbench(&image_src[i], &image_dst, &image_wm_src[j]);
+		  	  }
 		  }
-		  }
-
-    //Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
-    //image_addwm04(data_src,data_dst,data_wm_src);
-    //array2imageDst(image_dst,data_dst);
-    //cout << "	PSNR	NoAttack	GaussNoise	ImpulseNoiseAttack	Rotate	Shear	Narrowing" << endl;
-    //testbench(&image_src, &image_dst, &image_wm_src);
-    //getPSNR(&image_src, &image_dst);
-    //image_dst.display();
-    //GaussNoise(&image_dst, &image_wm_src);
-    //ImpulseNoiseAttack(&image_dst, &image_wm_src);
-    //Rotate(&image_dst, &image_wm_src);
-    //Shear(&image_dst, &image_wm_src);
-    //image_dst.display();
-    //image_getwm04(image_dst,image_wm_dst);
-    //getNC(&image_wm_src, &image_wm_dst);
-    //image_wm_dst.display();
 
   }
   catch( Exception &error_ )

@@ -29,8 +29,7 @@ double getPSNR(Image* src, Image* addwtm)
   }
   double MSE = tmp / (w*h);
   double PSNR = 10*log10(pow(MAX,2)/MSE);
-  //cout<< "PSNR = " << PSNR << endl;
-  cout << "	" << PSNR << "	";
+  cout << PSNR;
 
   return PSNR;
 
@@ -81,10 +80,8 @@ double getNC(Image* src, Image* extrwtm)
       AB = AB + (pixels[offset1 + 3]/65535*255) * (pixels1[offset2 + 0]/65535*255);
     }
   }
-  //cout << "AA="<< AA<<"BB="<<BB<<"AB="<<AB<<endl;
   double NC = AB/(sqrt(AA)*sqrt(BB));
-  //cout << "NC = " << NC <<endl;
-  cout << "	" << NC;
+  cout << " " << NC;
   return NC;
 
 }
