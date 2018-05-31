@@ -43,11 +43,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace Magick;
 using namespace std;
 
-void GetImage(Image &image_src,Image &image_dst,Image &image_wm_src,Image &image_wm_dst)
+void GetImage(Image *image_src,Image &image_dst,Image *image_wm_src,Image &image_wm_dst)
 {
-	image_src.read("2.png");
-	image_dst.read("2.png");
-	image_wm_src.read("a01.png");
+	image_src[0].read("1.png");
+	image_src[1].read("2.png");
+	image_src[2].read("3.png");
+	image_src[3].read("4.png");
+	image_src[4].read("5.png");
+	image_src[5].read("6.png");
+	image_src[6].read("7.png");
+	image_src[7].read("8.png");
+	image_src[8].read("9.png");
+	image_dst.read("1.png");
+	image_wm_src[0].read("a01.png");
+	image_wm_src[1].read("a02.png");
+	image_wm_src[2].read("a03.png");
 	image_wm_dst.read("a01.png");
 }
 
@@ -55,30 +65,41 @@ int main(void)
 {
 
   InitializeMagick(NULL);
-  Image image1[9];
-  image1[0].read("1.png");
-  image1[1].read("2.png");
-  image1[2].read("3.png");
-  image1[0].display();
-  image1[1].display();
-  image1[2].display();
+  //Image image1[9];
+  //image1[0].read("1.png");
+  //image1[1].read("2.png");
+  //image1[2].read("3.png");
+  //image1[0].display();
+  //image1[1].display();
+  //image1[2].display();
 
-  Image image_src;
+  Image image_src[9];
   Image image_dst;
-  Image image_wm_src;
+  Image image_wm_src[3];
   Image image_wm_dst;
   uchar data_src[800*800];
   uchar data_dst[800*800];
   bool data_wm_src[200*200];
   bool data_wm_dst[200*200];
   try {
-    GetImage(image_src,image_dst,image_wm_src,image_wm_dst);
+	  GetImage(image_src,image_dst,image_wm_src,image_wm_dst);
+	  cout << "	PSNR	NoAttack	GaussNoise	ImpulseNoiseAttack	Rotate	Shear	Narrowing" << endl;
+	  for (int i = 0; i < 9; i++)
+		  {
+		  for (int j = 0; j < 3; j++)
+		  {
+			  Image2Array(image_src[i],image_dst,image_wm_src[j],data_src,data_dst,data_wm_src);
+			  image_addwm04(data_src,data_dst,data_wm_src);
+			  array2imageDst(image_dst,data_dst);
+			  testbench(&image_src[i], &image_dst, &image_wm_src[j]);
+		  }
+		  }
 
-    Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
-    image_addwm04(data_src,data_dst,data_wm_src);
-    array2imageDst(image_dst,data_dst);
-    cout << "	PSNR	NoAttack	GaussNoise	ImpulseNoiseAttack	Rotate	Shear	Narrowing" << endl;
-    testbench(&image_src, &image_dst, &image_wm_src);
+    //Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
+    //image_addwm04(data_src,data_dst,data_wm_src);
+    //array2imageDst(image_dst,data_dst);
+    //cout << "	PSNR	NoAttack	GaussNoise	ImpulseNoiseAttack	Rotate	Shear	Narrowing" << endl;
+    //testbench(&image_src, &image_dst, &image_wm_src);
     //getPSNR(&image_src, &image_dst);
     //image_dst.display();
     //GaussNoise(&image_dst, &image_wm_src);
