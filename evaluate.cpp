@@ -29,7 +29,8 @@ double getPSNR(Image* src, Image* addwtm)
   }
   double MSE = tmp / (w*h);
   double PSNR = 10*log10(pow(MAX,2)/MSE);
-  cout<< "PSNR = " << PSNR << endl;
+  //cout<< "PSNR = " << PSNR << endl;
+  cout << "	" << PSNR << "	";
 
   return PSNR;
 
@@ -74,14 +75,16 @@ double getNC(Image* src, Image* extrwtm)
       offset1 = image1.channels() * (w * row + column);
       offset2 = image2.channels() * (w * row + column);
       AA = AA + pow(pixels[offset1 + 3]/65535*255, 2);
-      //BB = BB + pow(pixels1[offset2 + 0]/65535*255, 2);
+      //BB = BB + pow(pixels1[offset2 + 3]/65535*255, 2); test whether NC formula is true or not
       BB = BB + pow(pixels1[offset2 + 0]/65535*255, 2);
-      //AB = AB + (pixels[offset1 + 3]/65535*255) * (pixels1[offset2 + 0]/65535*255);
+      //AB = AB + (pixels[offset1 + 3]/65535*255) * (pixels1[offset2 + 3]/65535*255); test whether NC formula is true or not
       AB = AB + (pixels[offset1 + 3]/65535*255) * (pixels1[offset2 + 0]/65535*255);
     }
   }
+  //cout << "AA="<< AA<<"BB="<<BB<<"AB="<<AB<<endl;
   double NC = AB/(sqrt(AA)*sqrt(BB));
-  cout << "NC = " << NC <<endl;
+  //cout << "NC = " << NC <<endl;
+  cout << "	" << NC;
   return NC;
 
 }

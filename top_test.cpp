@@ -55,6 +55,14 @@ int main(void)
 {
 
   InitializeMagick(NULL);
+  Image image1[9];
+  image1[0].read("1.png");
+  image1[1].read("2.png");
+  image1[2].read("3.png");
+  image1[0].display();
+  image1[1].display();
+  image1[2].display();
+
   Image image_src;
   Image image_dst;
   Image image_wm_src;
