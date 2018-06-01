@@ -72,6 +72,98 @@ void image_idct(uchar src[640000], uchar dst[640000])
     }
 }
 
+void image_addwm02(uchar src[640000], uchar dst[640000], bool wm[200*200])
+{
+
+    dct_data_t image_block_input[8*8];
+    dct_data_t image_block_tmp[8*8];
+    dct_data_t image_block_output[8*8];
+    init_fdct(); // needed by REF  FDCT
+    init_idct(); // needed by WANG IDCT
+    float alpha = 0.5;
+
+    //1,4 2,3 3,2 4,1  ->3 10 17 32
+    wm_fArnold(wm);
+    wm_fArnold(wm);
+    wm_fArnold(wm);
+
+    for(int i = 0;i < 100;i++)
+    {
+        for(int j = 0;j < 100;j++)
+        {
+        	for(int m = 0;m < 8;m ++)
+        	{
+            	for(int n = 0;n < 8;n ++)
+            	{
+            		image_block_input[8*m+n] = src[(8*i+m)*800+8*j+n];
+            	}
+            }
+        	top_fdct(image_block_input,image_block_tmp);
+
+        	if(wm[200*(2*i)+2*j] > 0)
+        	{
+        		image_block_tmp[3] = (uchar)((1+alpha)*image_block_tmp[3]);
+
+        	}
+        	else
+        	{
+        		image_block_tmp[3] = (uchar)((1-alpha)*image_block_tmp[3]);
+        	}
+        	if(wm[200*(2*i)+2*j+1] > 0)
+        	{
+        		image_block_tmp[10] = (uchar)((1+alpha)*image_block_tmp[10]);
+        	}
+        	else
+        	{
+        		image_block_tmp[10] = (uchar)((1-alpha)*image_block_tmp[10]);
+        	}
+            if(wm[200*((2*i)+1)+2*j] > 0)
+        	{
+            	image_block_tmp[17] = (uchar)((1+alpha)*image_block_tmp[17]);
+        	}
+        	else
+        	{
+        		image_block_tmp[17] = (uchar)((1-alpha)*image_block_tmp[17]);
+        	}
+            if(wm[200*((2*i)+1)+2*j+1] > 0)
+        	{
+            	image_block_tmp[32] = (uchar)((1+alpha)*image_block_tmp[32]);
+        	}
+        	else
+        	{
+        		image_block_tmp[32] = (uchar)((1-alpha)*image_block_tmp[32]);
+        	}
+
+        	top_idct(image_block_tmp,image_block_output);
+        	for(int m = 0;m < 8;m ++)
+        	{
+            	for(int n = 0;n < 8;n ++)
+            	{
+            		dst[(8*i+m)*800+8*j+n] = image_block_output[8*m+n];
+            	}
+            }
+        }
+    }
+
+
+    for(int i = 0;i < 100;i++)
+    {
+        for(int j = 0;j < 100;j++)
+        {
+        	for(int m = 0;m < 8;m ++)
+        	{
+            	for(int n = 0;n < 8;n ++)
+            	{
+            		image_block_input[8*m+n] = dst[(8*i+m)*800+8*j+n];
+            	}
+            }
+        	top_fdct(image_block_input,image_block_tmp);
+
+
+        }
+    }
+}
+
 void image_addwm04(uchar src[640000], uchar dst[640000], bool wm[200*200])
 {
 
