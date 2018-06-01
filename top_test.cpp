@@ -81,7 +81,7 @@ int main(void)
 		  {
 		  	  for (int j = 0; j < 3; j++)
 		  	  {
-		  		  cout<< "(" << i << "," << j << ") ";
+		  		  cout<< "(" << i+1 << "," << j+1 << ") ";
 		  		  Image2Array(image_src[i],image_dst,image_wm_src[j],data_src,data_dst,data_wm_src);
 		  		  image_addwm04(data_src,data_dst,data_wm_src);
 		  		  array2imageDst(image_dst,data_dst);
