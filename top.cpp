@@ -78,9 +78,13 @@ void image_addwm02(uchar src[640000], uchar dst[640000], bool wm[200*200])
     dct_data_t image_block_input[8*8];
     dct_data_t image_block_tmp[8*8];
     dct_data_t image_block_output[8*8];
+
+    dct_data_t image_block_input_ref[8*8];
+    dct_data_t image_block_tmp_ref[8*8];
+    dct_data_t image_block_output_ref[8*8];
     init_fdct(); // needed by REF  FDCT
     init_idct(); // needed by WANG IDCT
-    float alpha = 0.5;
+    float alpha = 1;
 
     //1,4 2,3 3,2 4,1  ->3 10 17 32
     wm_fArnold(wm);
@@ -102,36 +106,37 @@ void image_addwm02(uchar src[640000], uchar dst[640000], bool wm[200*200])
 
         	if(wm[200*(2*i)+2*j] > 0)
         	{
-        		image_block_tmp[3] = (uchar)((1+alpha)*image_block_tmp[3]);
-
+        		image_block_tmp[3] = (dct_data_t)((1+alpha)*image_block_tmp[3]);
         	}
         	else
         	{
-        		image_block_tmp[3] = (uchar)((1-alpha)*image_block_tmp[3]);
+        		image_block_tmp[3] = (dct_data_t)((1-alpha)*image_block_tmp[3]);
         	}
         	if(wm[200*(2*i)+2*j+1] > 0)
         	{
-        		image_block_tmp[10] = (uchar)((1+alpha)*image_block_tmp[10]);
+        		image_block_tmp[10] = (dct_data_t)((1+alpha)*image_block_tmp[10]);
         	}
         	else
         	{
-        		image_block_tmp[10] = (uchar)((1-alpha)*image_block_tmp[10]);
+        		image_block_tmp[10] = (dct_data_t)((1-alpha)*image_block_tmp[10]);
         	}
             if(wm[200*((2*i)+1)+2*j] > 0)
         	{
-            	image_block_tmp[17] = (uchar)((1+alpha)*image_block_tmp[17]);
+            	image_block_tmp[17] = (dct_data_t)((1+alpha)*image_block_tmp[17]);
         	}
         	else
         	{
-        		image_block_tmp[17] = (uchar)((1-alpha)*image_block_tmp[17]);
+        		image_block_tmp[17] = (dct_data_t)((1-alpha)*image_block_tmp[17]);
         	}
             if(wm[200*((2*i)+1)+2*j+1] > 0)
         	{
-            	image_block_tmp[32] = (uchar)((1+alpha)*image_block_tmp[32]);
+            	printf("%d\r\n",image_block_tmp[32]);
+            	image_block_tmp[32] = (dct_data_t)((1+alpha)*image_block_tmp[32]);
+            	printf("%d\r\n",image_block_tmp[32]);
         	}
         	else
         	{
-        		image_block_tmp[32] = (uchar)((1-alpha)*image_block_tmp[32]);
+        		image_block_tmp[32] = (dct_data_t)((1-alpha)*image_block_tmp[32]);
         	}
 
         	top_idct(image_block_tmp,image_block_output);
@@ -145,7 +150,7 @@ void image_addwm02(uchar src[640000], uchar dst[640000], bool wm[200*200])
         }
     }
 
-
+    //1,4 2,3 3,2 4,1  ->3 10 17 32
     for(int i = 0;i < 100;i++)
     {
         for(int j = 0;j < 100;j++)
@@ -155,13 +160,57 @@ void image_addwm02(uchar src[640000], uchar dst[640000], bool wm[200*200])
             	for(int n = 0;n < 8;n ++)
             	{
             		image_block_input[8*m+n] = dst[(8*i+m)*800+8*j+n];
+            		image_block_input_ref[8*m+n] = src[(8*i+m)*800+8*j+n];
             	}
             }
         	top_fdct(image_block_input,image_block_tmp);
-
+        	top_fdct(image_block_input_ref,image_block_tmp_ref);
+        	if(image_block_tmp[3]>0)
+        	{
+        		if(image_block_tmp[3]>image_block_tmp_ref[3])
+        			wm[200*(2*i)+2*j] = 1;else wm[200*(2*i)+2*j] = 0;
+        	}
+        	else
+        	{
+        		if(image_block_tmp[3]>image_block_tmp_ref[3])
+        			wm[200*(2*i)+2*j] = 0;else wm[200*(2*i)+2*j] = 1;
+        	}
+        	if(image_block_tmp[10]>0)
+        	{
+        		if(image_block_tmp[10]>image_block_tmp_ref[10])
+        			wm[200*(2*i)+2*j+1] = 1;else wm[200*(2*i)+2*j+1] = 0;
+        	}
+        	else
+        	{
+        		if(image_block_tmp[10]>image_block_tmp_ref[10])
+        			wm[200*(2*i)+2*j+1] = 0;else wm[200*(2*i)+2*j+1] = 1;
+        	}
+        	if(image_block_tmp[17]>0)
+        	{
+        		if(image_block_tmp[17]>image_block_tmp_ref[17])
+        			wm[200*(2*i+1)+2*j] = 1;else wm[200*(2*i+1)+2*j] = 0;
+        	}
+        	else
+        	{
+        		if(image_block_tmp[17]>image_block_tmp_ref[17])
+        			wm[200*(2*i+1)+2*j] = 0;else wm[200*(2*i+1)+2*j] = 1;
+        	}
+        	if(image_block_tmp[32]>0)
+        	{
+        		if(image_block_tmp[32]>image_block_tmp_ref[32])
+        			wm[200*(2*i+1)+2*j+1] = 1;else wm[200*(2*i+1)+2*j+1] = 0;
+        	}
+        	else
+        	{
+        		if(image_block_tmp[32]>image_block_tmp_ref[32])
+        			wm[200*(2*i+1)+2*j+1] = 0;else wm[200*(2*i+1)+2*j+1] = 1;
+        	}
 
         }
     }
+    wm_iArnold(wm);
+    wm_iArnold(wm);
+    wm_iArnold(wm);
 }
 
 void image_addwm04(uchar src[640000], uchar dst[640000], bool wm[200*200])

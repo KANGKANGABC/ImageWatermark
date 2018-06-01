@@ -28,8 +28,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include <math.h>
 #include <Magick++.h>
-
-
 #include "dct.h"
 #include "top.h"
 #include "top_test.h"
@@ -65,10 +63,12 @@ int main(void)
     ImageRgb2Ycbcr(image_dst);
 //**************************************************************************************
     Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
+    //image_addwm04(data_src,data_dst,data_wm_src);//HLS Kernel
+    //array2image200(image_wm_dst,data_wm_src);
+    //image_wm_dst.display();
 
     image_addwm04(data_src,data_dst,data_wm_src);//HLS Kernel
     array2imageDst(image_dst,data_dst);
-
     ImageYcbcr2Rgb(image_src);
     ImageYcbcr2Rgb(image_dst);
     image_dst.display();
