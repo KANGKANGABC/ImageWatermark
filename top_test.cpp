@@ -43,65 +43,72 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace Magick;
 using namespace std;
 
-void GetImage(Image *image_src,Image &image_dst,Image *image_wm_src,Image &image_wm_dst)
+void GetImage(Image &image_src,Image &image_dst,Image &image_wm_src,Image &image_wm_dst,int index,int index_wm)
 {
-	image_src[0].read("1.png");
-	image_src[1].read("2.png");
-	image_src[2].read("3.png");
-	image_src[3].read("4.png");
-	image_src[4].read("5.png");
-	image_src[5].read("6.png");
-	image_src[6].read("7.png");
-	image_src[7].read("8.png");
-	image_src[8].read("9.png");
-	image_dst.read("1.png");
-	image_wm_src[0].read("a01.png");
-	image_wm_src[1].read("a02.png");
-	image_wm_src[2].read("a03.png");
-	image_wm_dst.read("a01.png");
+	switch(index)
+	{
+		case 0: image_src.read("1.png"); break;
+		case 1: image_src.read("2.png"); break;
+		case 2: image_src.read("3.png"); break;
+		case 3: image_src.read("4.png"); break;
+		case 4: image_src.read("5.png"); break;
+		case 5: image_src.read("6.png"); break;
+		case 6: image_src.read("7.png"); break;
+		case 7: image_src.read("8.png"); break;
+		case 8: image_src.read("9.png"); break;
+		default: image_src.read("1.png"); break;
+	}
+	switch(index_wm)
+	{
+		case 0: image_wm_src.read("a01.png"); break;
+		case 1: image_wm_src.read("a02.png"); break;
+		case 2: image_wm_src.read("a03.png"); break;
+		default: image_wm_src.read("a01.png"); break;
+	}
+	image_dst = image_src;
+	image_wm_dst = image_wm_src;
 }
 
 int main(void)
 {
 
-  InitializeMagick(NULL);
+	InitializeMagick(NULL);
 
-  Image image_src[9];
-  Image image_dst;
-  Image image_wm_src[3];
-  Image image_wm_dst;
-  uchar data_src[800*800];
-  uchar data_dst[800*800];
-  bool data_wm_src[200*200];
-  bool data_wm_dst[200*200];
-  try {
-	  GetImage(image_src,image_dst,image_wm_src,image_wm_dst);
-	  cout << " PSNR NoAttack GaussNoise(0.01) ImpulseNoise(0.01) Rotate(10') Shear(300*200) Narrowing(400*400)" << endl;
+	Image image_src;
+	Image image_dst;
+	Image image_wm_src;
+	Image image_wm_dst;
 
-	  for (int i = 0; i < 9; i++)
-	  {
-		  	  int j = 1;
-			  ImageRgb2Ycbcr(image_src[i]);
+	uchar data_src[800*800];
+	uchar data_dst[800*800];
+	bool data_wm_src[200*200];
+	bool data_wm_dst[200*200];
+	try {
+		  cout << " PSNR NoAttack GaussNoise(0.01) ImpulseNoise(0.01) Rotate(10') Shear(300*200) Narrowing(400*400)" << endl;
+
+		  for (int i = 0; i < 9; i++)
+		  {
+			  int j = 2;
+			  GetImage(image_src,image_dst,image_wm_src,image_wm_dst,i,j);
+			  ImageRgb2Ycbcr(image_src);
 			  ImageRgb2Ycbcr(image_dst);
 			  cout<< "(" << i+1 << "," << j+1 << ") ";
-			  image_dst = image_src[i];
-			  image_wm_dst = image_wm_src[i];
-			  Image2Array(image_src[i],image_dst,image_wm_src[j],data_src,data_dst,data_wm_src);
+
+			  Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
 			  image_addwm04(data_src,data_dst,data_wm_src);
 			  array2imageDst(image_dst,data_dst);
-			  //image_dst.display();
-			  ImageYcbcr2Rgb(image_src[i]);
+			  image_dst.display();
+			  ImageYcbcr2Rgb(image_src);
 			  ImageYcbcr2Rgb(image_dst);
-			  testbench(image_src[i], image_dst, image_wm_src[j]);
-	  }
+			  testbench(image_src, image_dst, image_wm_src);
+		  }
+	    }
+	  catch( Exception &error)
+		{
+		  cout << "Caught exception: " << error.what() << endl;
+		  return 1;
+		}
 
-  }
-  catch( Exception &error_ )
-    {
-      cout << "Caught exception: " << error_.what() << endl;
-      return 1;
-    }
-
-   return 0;
+	   return 0;
 
 }
