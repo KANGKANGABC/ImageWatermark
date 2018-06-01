@@ -28,20 +28,36 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include <math.h>
 #include <Magick++.h>
+
+
 #include "dct.h"
 #include "top.h"
 #include "top_test.h"
 #include "addwm.h"
 
+#include "attack.h"
+#include "evaluate.h"
+#include "testbench.h"
+
 
 using namespace Magick;
 using namespace std;
 
-void GetImage(Image &image_src,Image &image_dst,Image &image_wm_src,Image &image_wm_dst)
+void GetImage(Image *image_src,Image &image_dst,Image *image_wm_src,Image &image_wm_dst)
 {
-	image_src.read("8.png");
-	image_dst.read("8.png");
-	image_wm_src.read("a01.png");
+	image_src[0].read("1.png");
+	image_src[1].read("2.png");
+	image_src[2].read("3.png");
+	image_src[3].read("4.png");
+	image_src[4].read("5.png");
+	image_src[5].read("6.png");
+	image_src[6].read("7.png");
+	image_src[7].read("8.png");
+	image_src[8].read("9.png");
+	image_dst.read("1.png");
+	image_wm_src[0].read("a01.png");
+	image_wm_src[1].read("a02.png");
+	image_wm_src[2].read("a03.png");
 	image_wm_dst.read("a01.png");
 }
 
@@ -49,34 +65,35 @@ int main(void)
 {
 
   InitializeMagick(NULL);
-  Image image_src;
+
+  Image image_src[9];
   Image image_dst;
-  Image image_wm_src;
+  Image image_wm_src[3];
   Image image_wm_dst;
   uchar data_src[800*800];
   uchar data_dst[800*800];
   bool data_wm_src[200*200];
   bool data_wm_dst[200*200];
   try {
-    GetImage(image_src,image_dst,image_wm_src,image_wm_dst);
-    ImageRgb2Ycbcr(image_src);
-    ImageRgb2Ycbcr(image_dst);
-//**************************************************************************************
-    Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
-    //image_addwm04(data_src,data_dst,data_wm_src);//HLS Kernel
-    //array2image200(image_wm_dst,data_wm_src);
-    //image_wm_dst.display();
+	  GetImage(image_src,image_dst,image_wm_src,image_wm_dst);
+	  cout << " PSNR NoAttack GaussNoise(0.01) ImpulseNoise(0.01) Rotate(10') Shear(300*200) Narrowing(400*400)" << endl;
 
-    image_addwm04(data_src,data_dst,data_wm_src);//HLS Kernel
-    array2imageDst(image_dst,data_dst);
-    ImageYcbcr2Rgb(image_src);
-    ImageYcbcr2Rgb(image_dst);
-    image_dst.display();
-    image_getwm04(image_dst,image_wm_dst);
-    image_wm_dst.display();
-
-//***************************************************************************************
-
+	  for (int i = 0; i < 9; i++)
+	  {
+		  	  int j = 1;
+			  ImageRgb2Ycbcr(image_src[i]);
+			  ImageRgb2Ycbcr(image_dst);
+			  cout<< "(" << i+1 << "," << j+1 << ") ";
+			  image_dst = image_src[i];
+			  image_wm_dst = image_wm_src[i];
+			  Image2Array(image_src[i],image_dst,image_wm_src[j],data_src,data_dst,data_wm_src);
+			  image_addwm04(data_src,data_dst,data_wm_src);
+			  array2imageDst(image_dst,data_dst);
+			  //image_dst.display();
+			  ImageYcbcr2Rgb(image_src[i]);
+			  ImageYcbcr2Rgb(image_dst);
+			  testbench(image_src[i], image_dst, image_wm_src[j]);
+	  }
 
   }
   catch( Exception &error_ )

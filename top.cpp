@@ -221,8 +221,6 @@ void image_addwm04(uchar src[640000], uchar dst[640000], bool wm[200*200])
     dct_data_t image_block_output[8*8];
     init_fdct(); // needed by REF  FDCT
     init_idct(); // needed by WANG IDCT
-    unsigned char alpha = 1;
-    float beta = 0.5;
 // 2/3 3/4 3/5 2/4 --> 19/26 28/35 29/43 20/34 : 1 2 3 4
 // 1 2
 // 3 4
@@ -237,7 +235,10 @@ void image_addwm04(uchar src[640000], uchar dst[640000], bool wm[200*200])
         	{
             	for(int n = 0;n < 8;n ++)
             	{
-            		image_block_input[8*m+n] = src[(8*i+m)*800+8*j+n]*2 - 256;
+            		short int tmp = src[(8*i+m)*800+8*j+n]*2 - 255;
+            		image_block_input[8*m+n] = tmp;
+            		//src[(8*i+m)*800+8*j+n];
+            		//src[(8*i+m)*800+8*j+n]*2 - 255;
             	}
             }
         	top_fdct(image_block_input,image_block_tmp);
@@ -303,11 +304,15 @@ void image_addwm04(uchar src[640000], uchar dst[640000], bool wm[200*200])
         	{
             	for(int n = 0;n < 8;n ++)
             	{
-            		dst[(8*i+m)*800+8*j+n] = (image_block_output[8*m+n] + 256)/2;
+            		dst[(8*i+m)*800+8*j+n] = (image_block_output[8*m+n] + 255)/2;
+            		//printf("%d ",dst[(8*i+m)*800+8*j+n]);
+            		//image_block_output[8*m+n];//(image_block_output[8*m+n] + 255)/2;
             	}
             }
+        	//printf("\r\n");
         }
     }
+
 
 }
 

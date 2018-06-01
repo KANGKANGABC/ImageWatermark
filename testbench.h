@@ -14,6 +14,6 @@
 using namespace Magick;
 using namespace std;
 
-void testbench(Image* image_src, Image* image_dst, Image* image_wm_src);
+void testbench(Image image_src, Image image_dst, Image image_wm_src);
 
 #endif
