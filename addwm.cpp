@@ -28,9 +28,11 @@ void ImageRgb2Ycbcr(Image &image_src)
     		pixels_src[offset_src + 0] = y*65535/255;
     		pixels_src[offset_src + 1] = cb*65535/255;
     		pixels_src[offset_src + 2] = cr*65535/255;
-
+    		//printf("%d ",y);
     	}
+    	//printf("\r\n");
     }
+
     image_src.syncPixels();
 }
 
@@ -154,7 +156,7 @@ void image_getwm04(Image image_dst,Image &image_wm_dst)
         	{
             	for(int n = 0;n < 8;n ++)
             	{
-            		image_block_input[8*m+n] = data_dst[(8*i+m)*800+8*j+n];
+            		image_block_input[8*m+n] = 2*data_dst[(8*i+m)*800+8*j+n] - 256;
             	}
             }
         	top_fdct(image_block_input,image_block_tmp);

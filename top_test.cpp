@@ -63,7 +63,6 @@ int main(void)
     GetImage(image_src,image_dst,image_wm_src,image_wm_dst);
     ImageRgb2Ycbcr(image_src);
     ImageRgb2Ycbcr(image_dst);
-    image_src.display();
 //**************************************************************************************
     Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
 

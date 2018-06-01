@@ -188,7 +188,7 @@ void image_addwm04(uchar src[640000], uchar dst[640000], bool wm[200*200])
         	{
             	for(int n = 0;n < 8;n ++)
             	{
-            		image_block_input[8*m+n] = src[(8*i+m)*800+8*j+n];
+            		image_block_input[8*m+n] = src[(8*i+m)*800+8*j+n]*2 - 256;
             	}
             }
         	top_fdct(image_block_input,image_block_tmp);
@@ -254,59 +254,12 @@ void image_addwm04(uchar src[640000], uchar dst[640000], bool wm[200*200])
         	{
             	for(int n = 0;n < 8;n ++)
             	{
-            		dst[(8*i+m)*800+8*j+n] = image_block_output[8*m+n];
+            		dst[(8*i+m)*800+8*j+n] = (image_block_output[8*m+n] + 256)/2;
             	}
             }
         }
     }
 
-
-    for(int i = 0;i < 100;i++)
-    {
-        for(int j = 0;j < 100;j++)
-        {
-        	for(int m = 0;m < 8;m ++)
-        	{
-            	for(int n = 0;n < 8;n ++)
-            	{
-            		image_block_input[8*m+n] = dst[(8*i+m)*800+8*j+n];
-            	}
-            }
-        	top_fdct(image_block_input,image_block_tmp);
-        	if(image_block_tmp[19] > image_block_tmp[26])
-        	{
-        		wm[200*(2*i)+2*j] = 1;
-        	}
-        	else
-        	{
-        		wm[200*(2*i)+2*j] = 0;
-        	}
-        	if(image_block_tmp[28] > image_block_tmp[35])
-        	{
-        		wm[200*(2*i)+2*j+1] = 1;
-        	}
-        	else
-        	{
-        		wm[200*(2*i)+2*j+1] = 0;
-        	}
-        	if(image_block_tmp[29] > image_block_tmp[43])
-        	{
-        		wm[200*((2*i)+1)+2*j] = 1;
-        	}
-        	else
-        	{
-        		wm[200*((2*i)+1)+2*j] = 0;
-        	}
-        	if(image_block_tmp[20] > image_block_tmp[34])
-        	{
-        		wm[200*((2*i)+1)+2*j+1] = 1;
-        	}
-        	else
-        	{
-        		wm[200*((2*i)+1)+2*j+1] = 0;
-        	}
-        }
-    }
 }
 
 void swap_sint(signed short int  &a,signed short int  &b)
