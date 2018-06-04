@@ -28,9 +28,7 @@ void ImageRgb2Ycbcr(Image &image_src)
     		pixels_src[offset_src + 0] = y*65535/255;
     		pixels_src[offset_src + 1] = cb*65535/255;
     		pixels_src[offset_src + 2] = cr*65535/255;
-    		//printf("%d ",y);
     	}
-    	//printf("\r\n");
     }
 
     image_src.syncPixels();
@@ -138,8 +136,26 @@ void array2imageDst(Image &image_dst,uchar data_dst[800*800])
     }
     image_dst.syncPixels();
 }
+void image_putwm04(Image image_src,Image &image_dst,Image image_wm_src)
+{
+	uchar data_src[800*800];
+	uchar data_dst[800*800];
+	bool data_wm_src[200*200];
+
+	ImageRgb2Ycbcr(image_src);
+	ImageRgb2Ycbcr(image_dst);
+
+	Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
+	image_addwm04(data_src,data_dst,data_wm_src);
+	array2imageDst(image_dst,data_dst);
+
+	ImageYcbcr2Rgb(image_src);
+	ImageYcbcr2Rgb(image_dst);
+}
 void image_getwm04(Image image_dst,Image &image_wm_dst)
 {
+
+	//ImageRgb2Ycbcr(image_dst);
 	uchar data_dst[800*800];
 	bool data_wm_dst[200*200];
 	image2array800(image_dst,data_dst);
@@ -148,6 +164,7 @@ void image_getwm04(Image image_dst,Image &image_wm_dst)
     dct_data_t image_block_tmp[8*8];
     init_fdct(); // needed by REF  FDCT
     init_idct(); // needed by WANG IDCT
+    // 2/3 3/4 3/5 2/4 --> 19/26 28/35 29/43 20/34 : 1 2 3 4
     for(int i = 0;i < 100;i++)
     {
         for(int j = 0;j < 100;j++)
@@ -156,7 +173,7 @@ void image_getwm04(Image image_dst,Image &image_wm_dst)
         	{
             	for(int n = 0;n < 8;n ++)
             	{
-            		image_block_input[8*m+n] = 2*data_dst[(8*i+m)*800+8*j+n] - 256;
+            		image_block_input[8*m+n] = data_dst[(8*i+m)*800+8*j+n];//2*data_dst[(8*i+m)*800+8*j+n] - 255;
             	}
             }
         	top_fdct(image_block_input,image_block_tmp);
@@ -198,6 +215,90 @@ void image_getwm04(Image image_dst,Image &image_wm_dst)
     wm_iArnold(data_wm_dst);
     wm_iArnold(data_wm_dst);
     array2image200(image_wm_dst,data_wm_dst);
+    //image_wm_dst.display();
+
+}
+void image_putwm05(Image image_src,Image &image_dst,Image image_wm_src)
+{
+	uchar data_src[800*800];
+	uchar data_dst[800*800];
+	bool data_wm_src[200*200];
+
+	ImageRgb2Ycbcr(image_src);
+	ImageRgb2Ycbcr(image_dst);
+
+	Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
+	image_addwm05(data_src,data_dst,data_wm_src);
+	array2imageDst(image_dst,data_dst);
+
+	ImageYcbcr2Rgb(image_src);
+	ImageYcbcr2Rgb(image_dst);
+}
+void image_getwm05(Image image_dst,Image &image_wm_dst)
+{
+
+	//ImageRgb2Ycbcr(image_dst);
+	image_dst.resize(Geometry(800,800));
+	uchar data_dst[800*800];
+	bool data_wm_dst[200*200];
+	image2array800(image_dst,data_dst);
+	image2array200(image_wm_dst,data_wm_dst);
+    dct_data_t image_block_input[8*8];
+    dct_data_t image_block_tmp[8*8];
+    init_fdct(); // needed by REF  FDCT
+    init_idct(); // needed by WANG IDCT
+    // 1-6/2-5 3-4/4-3 3-3/4-4 5-2/6-1 --> 5/12 19/26 18/27 33/40 : 1 2 3 4
+    for(int i = 0;i < 100;i++)
+    {
+        for(int j = 0;j < 100;j++)
+        {
+        	for(int m = 0;m < 8;m ++)
+        	{
+            	for(int n = 0;n < 8;n ++)
+            	{
+            		image_block_input[8*m+n] = data_dst[(8*i+m)*800+8*j+n];//2*data_dst[(8*i+m)*800+8*j+n] - 255;
+            	}
+            }
+        	top_fdct(image_block_input,image_block_tmp);
+        	if(image_block_tmp[5] > image_block_tmp[12])
+        	{
+        		data_wm_dst[200*(2*i)+2*j] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*(2*i)+2*j] = 0;
+        	}
+        	if(image_block_tmp[19] > image_block_tmp[26])
+        	{
+        		data_wm_dst[200*(2*i)+2*j+1] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*(2*i)+2*j+1] = 0;
+        	}
+        	if(image_block_tmp[18] > image_block_tmp[27])
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j] = 0;
+        	}
+        	if(image_block_tmp[33] > image_block_tmp[40])
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j+1] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j+1] = 0;
+        	}
+        }
+    }
+    wm_iArnold(data_wm_dst);
+    wm_iArnold(data_wm_dst);
+    wm_iArnold(data_wm_dst);
+    array2image200(image_wm_dst,data_wm_dst);
+    //image_wm_dst.display();
 
 }
 void image2array800(Image image,uchar data[800*800])

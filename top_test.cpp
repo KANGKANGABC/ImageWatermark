@@ -35,56 +35,70 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "top_test.h"
 #include "addwm.h"
 
+#include "attack.h"
+#include "evaluate.h"
+#include "testbench.h"
+
 
 using namespace Magick;
 using namespace std;
 
-void GetImage(Image &image_src,Image &image_dst,Image &image_wm_src,Image &image_wm_dst)
+void GetImage(Image &image_src,Image &image_dst,Image &image_wm_src,Image &image_wm_dst,int index,int index_wm)
 {
-	image_src.read("8.png");
-	image_dst.read("8.png");
-	image_wm_src.read("a01.png");
-	image_wm_dst.read("a01.png");
+	switch(index)
+	{
+		case 0: image_src.read("1.png"); break;
+		case 1: image_src.read("2.png"); break;
+		case 2: image_src.read("3.png"); break;
+		case 3: image_src.read("4.png"); break;
+		case 4: image_src.read("5.png"); break;
+		case 5: image_src.read("6.png"); break;
+		case 6: image_src.read("7.png"); break;
+		case 7: image_src.read("8.png"); break;
+		case 8: image_src.read("9.png"); break;
+		default: image_src.read("1.png"); break;
+	}
+	switch(index_wm)
+	{
+		case 0: image_wm_src.read("a01.png"); break;
+		case 1: image_wm_src.read("a02.png"); break;
+		case 2: image_wm_src.read("a03.png"); break;
+		default: image_wm_src.read("a01.png"); break;
+	}
+	image_dst = image_src;
+	image_wm_dst = image_wm_src;
 }
 
 int main(void)
 {
 
-  InitializeMagick(NULL);
-  Image image_src;
-  Image image_dst;
-  Image image_wm_src;
-  Image image_wm_dst;
-  uchar data_src[800*800];
-  uchar data_dst[800*800];
-  bool data_wm_src[200*200];
-  bool data_wm_dst[200*200];
-  try {
-    GetImage(image_src,image_dst,image_wm_src,image_wm_dst);
-    ImageRgb2Ycbcr(image_src);
-    ImageRgb2Ycbcr(image_dst);
-//**************************************************************************************
-    Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
+	InitializeMagick(NULL);
 
-    image_addwm04(data_src,data_dst,data_wm_src);//HLS Kernel
-    array2imageDst(image_dst,data_dst);
+	Image image_src;
+	Image image_dst;
+	Image image_wm_src;
+	Image image_wm_dst;
 
-    ImageYcbcr2Rgb(image_src);
-    ImageYcbcr2Rgb(image_dst);
-    image_dst.display();
-    image_getwm04(image_dst,image_wm_dst);
-    image_wm_dst.display();
+	try {
+		  cout << " PSNR NoAttack GaussNoise(0.01) ImpulseNoise(0.01) Rotate(10') Shear(300*200) Narrowing(400*400)" << endl;
 
-//***************************************************************************************
+		  for (int i = 0; i < 9; i++)
+		  {
+			  int j = 0;
+			  GetImage(image_src,image_dst,image_wm_src,image_wm_dst,i,j);
+			  cout<< "(" << i+1 << "," << j+1 << ") ";
+			  image_putwm05(image_src,image_dst,image_wm_src);
+			  //image_dst.display();
+			  testbench(image_src, image_dst, image_wm_src);
 
+		  }
+	    }
+	  catch( Exception &error)
+		{
+		  cout << "Caught exception: " << error.what() << endl;
+		  return 1;
+		}
 
-  }
-  catch( Exception &error_ )
-    {
-      cout << "Caught exception: " << error_.what() << endl;
-      return 1;
-    }
-
-   return 0;
+	   return 0;
 
 }
