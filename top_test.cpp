@@ -79,28 +79,18 @@ int main(void)
 	Image image_wm_src;
 	Image image_wm_dst;
 
-	uchar data_src[800*800];
-	uchar data_dst[800*800];
-	bool data_wm_src[200*200];
-	bool data_wm_dst[200*200];
 	try {
 		  cout << " PSNR NoAttack GaussNoise(0.01) ImpulseNoise(0.01) Rotate(10') Shear(300*200) Narrowing(400*400)" << endl;
 
 		  for (int i = 0; i < 9; i++)
 		  {
-			  int j = 2;
+			  int j = 0;
 			  GetImage(image_src,image_dst,image_wm_src,image_wm_dst,i,j);
-			  ImageRgb2Ycbcr(image_src);
-			  ImageRgb2Ycbcr(image_dst);
 			  cout<< "(" << i+1 << "," << j+1 << ") ";
-
-			  Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
-			  image_addwm04(data_src,data_dst,data_wm_src);
-			  array2imageDst(image_dst,data_dst);
-			  image_dst.display();
-			  ImageYcbcr2Rgb(image_src);
-			  ImageYcbcr2Rgb(image_dst);
+			  image_putwm05(image_src,image_dst,image_wm_src);
+			  //image_dst.display();
 			  testbench(image_src, image_dst, image_wm_src);
+
 		  }
 	    }
 	  catch( Exception &error)
