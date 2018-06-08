@@ -1,0 +1,27 @@
+#-----------------------------------------------------------
+# Vivado v2017.1_sdx (64-bit)
+# SW Build 1915620 on Thu Jun 22 17:54:59 MDT 2017
+# IP Build 1908669 on Thu Jun 22 19:20:41 MDT 2017
+# Start of session at: Tue Jun  5 19:01:43 2018
+# Process ID: 15013
+# Current directory: /media/lab302/347d434a-189f-43cc-baf7-e73f9cd9728a/ZhaoKang/workspace/hls/project_dctTest_v1.0/dct_hls
+# Command line: vivado
+# Log file: /media/lab302/347d434a-189f-43cc-baf7-e73f9cd9728a/ZhaoKang/workspace/hls/project_dctTest_v1.0/dct_hls/vivado.log
+# Journal file: /media/lab302/347d434a-189f-43cc-baf7-e73f9cd9728a/ZhaoKang/workspace/hls/project_dctTest_v1.0/dct_hls/vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project /media/lab302/347d434a-189f-43cc-baf7-e73f9cd9728a/ZhaoKang/workspace/vivado/project_smartL_v1.0/project_smartL_v1.0.xpr
+update_compile_order -fileset sources_1
+ls
+cd ..
+ls
+cd
+ls
+ls
+cd ..
+ls
+cd /media/lab302/347d434a-189f-43cc-baf7-e73f9cd9728a/ZhaoKang/workspace/hls/project_dctTest_v1.0/solution1/sim/verilog/
+ls
+open_wave_database image_addwm05.wdb
+open_wave_config image_addwm05.wcfg
+close_sim

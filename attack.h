@@ -12,14 +12,15 @@
 using namespace Magick;
 using namespace std;
 
-void NoAttack(Image* src, Image* wm_src);
-void GaussNoise(Image* src, Image* wm_src);
-void ImpulseNoiseAttack(Image* src, Image* wm_src);
-void Rotate(Image* src, Image* wm_src);
-void Shear(Image* src, Image* wm_src);
-void Compress(Image* src, Image* wm_src);
-void TransformFormat(Image* src, Image* wm_src);
-void Narrowing(Image* src, Image* wm_src);
+void NoAttack(Image* src, Image* wm_src, Image ref);
+void GaussNoise(Image* src, Image* wm_src, Image ref);
+void ImpulseNoiseAttack(Image* src, Image* wm_src, Image ref);
+void Rotate(Image* src, Image* wm_src, Image ref);
+void Shear(Image* src, Image* wm_src, Image ref);
+void Compress(Image* src, Image* wm_src, Image ref);
+void TransformFormat(Image* src, Image* wm_src, Image ref);
+void Narrowing(Image* src, Image* wm_src, Image ref);
+
 
 
 #endif

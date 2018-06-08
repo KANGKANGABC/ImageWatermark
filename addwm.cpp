@@ -68,7 +68,7 @@ void ImageYcbcr2Rgb(Image &image_src)
     image_src.syncPixels();
 }
 
-void Image2Array(Image image_src,Image image_dst,Image image_wm,
+void ImageY2Array(Image image_src,Image image_dst,Image image_wm,
 uchar data_src[800*800],uchar data_dst[800*800],bool data_wm[200*200])//Image Pre Processing
 {
     int w = image_src.columns();
@@ -114,6 +114,51 @@ uchar data_src[800*800],uchar data_dst[800*800],bool data_wm[200*200])//Image Pr
         }
     }
 }
+void ImageCb2Array(Image image_src,Image image_dst,Image image_wm,
+uchar data_src[800*800],uchar data_dst[800*800],bool data_wm[200*200])//Image Pre Processing
+{
+    int w = image_src.columns();
+    int h = image_src.rows();
+    MagickCore::Quantum *pixels_src = image_src.getPixels(0, 0, w, h);
+    MagickCore::Quantum *pixels_dst = image_dst.getPixels(0, 0, w, h);
+
+    int w_w = image_wm.columns();
+    int h_w= image_wm.rows();
+    MagickCore::Quantum *pixels_wm = image_wm.getPixels(0, 0, w_w, h_w);
+
+    int row = 0;
+    int column = 0;
+    unsigned offset_src = image_src.channels() * (w * row + column);
+    unsigned offset_dst = image_dst.channels() * (w * row + column);
+    unsigned offset_wm = image_wm.channels() * (w_w * row + column);
+    for(int i = 0;i < 800;i++)
+    {
+        for(int j = 0;j < 800;j++)
+        {
+    		row = i;
+    		column = j;
+    		offset_src = image_src.channels() * (w * row + column);
+    		data_src[800*i+j] = (uchar)(pixels_src[offset_src + 1]*255/65535);
+        }
+    }
+
+    int length = 10;
+    for(int i = 0;i < 200;i++)
+    {
+        for(int j = 0;j < 200;j++)
+        {
+        	if((j>=0 && j <length && i >= 100 - length/2 && i < 100 + length/2)||(j>=200-length && j <200 && i >= 100 - length/2 && i < 100 + length/2))
+        	{
+        		data_wm[200*i+j] = 1;
+        	}
+        	else
+        	{
+        		data_wm[200*i+j] = 0;
+        	}
+
+        }
+    }
+}
 void array2imageDst(Image &image_dst,uchar data_dst[800*800])
 {
     int w = image_dst.columns();
@@ -136,6 +181,28 @@ void array2imageDst(Image &image_dst,uchar data_dst[800*800])
     }
     image_dst.syncPixels();
 }
+void array2imageDstCb(Image &image_dst,uchar data_dst[800*800])
+{
+    int w = image_dst.columns();
+    int h = image_dst.rows();
+    MagickCore::Quantum *pixels_dst = image_dst.getPixels(0, 0, w, h);
+    int row = 0;
+    int column = 0;
+    unsigned offset_dst = image_dst.channels() * (w * row + column);
+    for(int i = 0;i < 800;i++)
+    {
+        for(int j = 0;j < 800;j++)
+        {
+    		row = i;
+    		column = j;
+    		offset_dst = image_dst.channels() * (w * row + column);
+    		//pixels_dst[offset_dst + 1] = 0;
+    		//pixels_dst[offset_dst + 2] = 0;
+    		pixels_dst[offset_dst + 1] = (data_dst[800*i+j]*(65535/255));
+        }
+    }
+    image_dst.syncPixels();
+}
 void image_putwm04(Image image_src,Image &image_dst,Image image_wm_src)
 {
 	uchar data_src[800*800];
@@ -145,7 +212,7 @@ void image_putwm04(Image image_src,Image &image_dst,Image image_wm_src)
 	ImageRgb2Ycbcr(image_src);
 	ImageRgb2Ycbcr(image_dst);
 
-	Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
+	ImageY2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
 	image_addwm04(data_src,data_dst,data_wm_src);
 	array2imageDst(image_dst,data_dst);
 
@@ -227,7 +294,7 @@ void image_putwm05(Image image_src,Image &image_dst,Image image_wm_src)
 	ImageRgb2Ycbcr(image_src);
 	ImageRgb2Ycbcr(image_dst);
 
-	Image2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
+	ImageY2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
 	image_addwm05(data_src,data_dst,data_wm_src);
 	array2imageDst(image_dst,data_dst);
 
@@ -237,8 +304,9 @@ void image_putwm05(Image image_src,Image &image_dst,Image image_wm_src)
 void image_getwm05(Image image_dst,Image &image_wm_dst)
 {
 
-	//ImageRgb2Ycbcr(image_dst);
+	ImageRgb2Ycbcr(image_dst);
 	image_dst.resize(Geometry(800,800));
+
 	uchar data_dst[800*800];
 	bool data_wm_dst[200*200];
 	image2array800(image_dst,data_dst);
@@ -301,6 +369,174 @@ void image_getwm05(Image image_dst,Image &image_wm_dst)
     //image_wm_dst.display();
 
 }
+void image_putwm06(Image image_src,Image &image_dst,Image image_wm_src)
+{
+	uchar data_src[800*800];
+	uchar data_dst[800*800];
+	bool data_wm_src[200*200];
+
+//	ImageRgb2Ycbcr(image_src);
+//	ImageRgb2Ycbcr(image_dst);
+
+	uchar data_dir_src[800*800];
+	uchar data_dir_dst[800*800];
+	bool data_dirwm_src[200*200];
+
+	ImageY2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
+	ImageCb2Array(image_src,image_dst,image_wm_src,data_dir_src,data_dir_dst,data_dirwm_src);
+	Image tmp = image_wm_src;
+	array2image200(tmp,data_dirwm_src);
+
+
+	image_addwm05(data_src,data_dst,data_wm_src);
+	image_addwm05(data_dir_src,data_dir_dst,data_dirwm_src);
+
+
+	array2imageDst(image_dst,data_dst);
+	array2imageDstCb(image_dst,data_dir_dst);
+
+//	ImageYcbcr2Rgb(image_src);
+//	ImageYcbcr2Rgb(image_dst);
+
+
+}
+void image_getwm06(Image image_dst,Image &image_wm_dst)
+{
+
+	//ImageRgb2Ycbcr(image_dst);
+	image_dst.resize(Geometry(800,800));
+
+	uchar data_dst[800*800];
+	bool data_wm_dst[200*200];
+	image2array800(image_dst,data_dst);
+	image2array200(image_wm_dst,data_wm_dst);
+    dct_data_t image_block_input[8*8];
+    dct_data_t image_block_tmp[8*8];
+    init_fdct(); // needed by REF  FDCT
+    init_idct(); // needed by WANG IDCT
+    // 1-6/2-5 3-4/4-3 3-3/4-4 5-2/6-1 --> 5/12 19/26 18/27 33/40 : 1 2 3 4
+    for(int i = 0;i < 100;i++)
+    {
+        for(int j = 0;j < 100;j++)
+        {
+        	for(int m = 0;m < 8;m ++)
+        	{
+            	for(int n = 0;n < 8;n ++)
+            	{
+            		image_block_input[8*m+n] = data_dst[(8*i+m)*800+8*j+n];//2*data_dst[(8*i+m)*800+8*j+n] - 255;
+            	}
+            }
+        	top_fdct(image_block_input,image_block_tmp);
+        	if(image_block_tmp[5] > image_block_tmp[12])
+        	{
+        		data_wm_dst[200*(2*i)+2*j] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*(2*i)+2*j] = 0;
+        	}
+        	if(image_block_tmp[19] > image_block_tmp[26])
+        	{
+        		data_wm_dst[200*(2*i)+2*j+1] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*(2*i)+2*j+1] = 0;
+        	}
+        	if(image_block_tmp[18] > image_block_tmp[27])
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j] = 0;
+        	}
+        	if(image_block_tmp[33] > image_block_tmp[40])
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j+1] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j+1] = 0;
+        	}
+        }
+    }
+    wm_iArnold(data_wm_dst);
+    wm_iArnold(data_wm_dst);
+    wm_iArnold(data_wm_dst);
+    array2image200(image_wm_dst,data_wm_dst);
+    //image_wm_dst.display();
+
+}
+void image_getdirwm06(Image image_dst,Image &image_wm_dst)
+{
+
+	//ImageRgb2Ycbcr(image_dst);
+	image_dst.resize(Geometry(800,800));
+
+	uchar data_dst[800*800];
+	bool data_wm_dst[200*200];
+	imageCb2array800(image_dst,data_dst);
+	image2array200(image_wm_dst,data_wm_dst);
+    dct_data_t image_block_input[8*8];
+    dct_data_t image_block_tmp[8*8];
+    init_fdct(); // needed by REF  FDCT
+    init_idct(); // needed by WANG IDCT
+    // 1-6/2-5 3-4/4-3 3-3/4-4 5-2/6-1 --> 5/12 19/26 18/27 33/40 : 1 2 3 4
+    for(int i = 0;i < 100;i++)
+    {
+        for(int j = 0;j < 100;j++)
+        {
+        	for(int m = 0;m < 8;m ++)
+        	{
+            	for(int n = 0;n < 8;n ++)
+            	{
+            		image_block_input[8*m+n] = data_dst[(8*i+m)*800+8*j+n];//2*data_dst[(8*i+m)*800+8*j+n] - 255;
+            	}
+            }
+        	top_fdct(image_block_input,image_block_tmp);
+        	if(image_block_tmp[5] > image_block_tmp[12])
+        	{
+        		data_wm_dst[200*(2*i)+2*j] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*(2*i)+2*j] = 0;
+        	}
+        	if(image_block_tmp[19] > image_block_tmp[26])
+        	{
+        		data_wm_dst[200*(2*i)+2*j+1] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*(2*i)+2*j+1] = 0;
+        	}
+        	if(image_block_tmp[18] > image_block_tmp[27])
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j] = 0;
+        	}
+        	if(image_block_tmp[33] > image_block_tmp[40])
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j+1] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j+1] = 0;
+        	}
+        }
+    }
+    wm_iArnold(data_wm_dst);
+    wm_iArnold(data_wm_dst);
+    wm_iArnold(data_wm_dst);
+    array2image200(image_wm_dst,data_wm_dst);
+    image_wm_dst.display();
+
+
+}
 void image2array800(Image image,uchar data[800*800])
 {
     int w = image.columns();
@@ -317,6 +553,25 @@ void image2array800(Image image,uchar data[800*800])
     		column = j;
     		offset = image.channels() * (w * row + column);
     		data[800*i+j] = (uchar)(pixels[offset + 0]*255/65535);
+        }
+    }
+}
+void imageCb2array800(Image image,uchar data[800*800])
+{
+    int w = image.columns();
+    int h = image.rows();
+    MagickCore::Quantum *pixels = image.getPixels(0, 0, w, h);
+    int row = 0;
+    int column = 0;
+    unsigned offset = image.channels() * (w * row + column);
+    for(int i = 0;i < 800;i++)
+    {
+        for(int j = 0;j < 800;j++)
+        {
+    		row = i;
+    		column = j;
+    		offset = image.channels() * (w * row + column);
+    		data[800*i+j] = (uchar)(pixels[offset + 1]*255/65535);
         }
     }
 }
@@ -646,6 +901,192 @@ void wm1_detect(Image image_src,Image image_wm)
     image_wm.syncPixels();
     image_wm.resize(Magick::Geometry(200, 200));
     image_wm.display();
+}
+
+void image_putwm01(Image image_src,Image &image_dst,Image image_wm_src)
+{
+	uchar data_src[800*800];
+	uchar data_dst[800*800];
+	bool data_wm_src[200*200];
+
+	ImageRgb2Ycbcr(image_src);
+	ImageRgb2Ycbcr(image_dst);
+
+	uchar data_dir_src[800*800];
+	uchar data_dir_dst[800*800];
+	bool data_dirwm_src[200*200];
+
+	ImageY2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
+
+	image_addwm02(data_src,data_dst,data_wm_src);
+
+	array2imageDst(image_dst,data_dst);
+	Image tmp = image_wm_src;
+	array2image200(tmp,data_wm_src);
+	tmp.display();
+
+	ImageYcbcr2Rgb(image_src);
+	ImageYcbcr2Rgb(image_dst);
+
+
+}
+void image_getwm01(Image image_src,Image image_dst,Image &image_wm_dst)
+{
+
+	//ImageRgb2Ycbcr(image_dst);
+	image_src.resize(Geometry(800,800));
+	image_dst.resize(Geometry(800,800));
+
+	uchar data_dst[800*800];
+	uchar data_src[800*800];
+	bool data_wm_dst[200*200];
+
+	image2array800(image_src,data_src);
+	image2array800(image_dst,data_dst);
+	image2array200(image_wm_dst,data_wm_dst);
+
+    dct_data_t image_block_input[8*8];
+    dct_data_t image_block_tmp[8*8];
+
+    dct_data_t image_block_input_src[8*8];
+    dct_data_t image_block_tmp_src[8*8];
+    init_fdct(); // needed by REF  FDCT
+    init_idct(); // needed by WANG IDCT
+    // 1-6/2-5 3-4/4-3 3-3/4-4 5-2/6-1 --> 5/12 19/26 18/27 33/40 : 1 2 3 4
+    for(int i = 0;i < 100;i++)
+    {
+        for(int j = 0;j < 100;j++)
+        {
+        	for(int m = 0;m < 8;m ++)
+        	{
+            	for(int n = 0;n < 8;n ++)
+            	{
+            		image_block_input[8*m+n] = data_dst[(8*i+m)*800+8*j+n];//2*data_dst[(8*i+m)*800+8*j+n] - 255;
+            		image_block_input_src[8*m+n] = data_src[(8*i+m)*800+8*j+n];
+            	}
+            }
+        	top_fdct(image_block_input,image_block_tmp);
+        	top_fdct(image_block_input_src,image_block_tmp_src);
+
+        	if(image_block_tmp[5] > image_block_tmp[12])
+        	{
+        		data_wm_dst[200*(2*i)+2*j] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*(2*i)+2*j] = 0;
+        	}
+        	if(image_block_tmp[19] > image_block_tmp[26])
+        	{
+        		data_wm_dst[200*(2*i)+2*j+1] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*(2*i)+2*j+1] = 0;
+        	}
+        	if(image_block_tmp[18] > image_block_tmp[27])
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j] = 0;
+        	}
+        	if(image_block_tmp[33] > image_block_tmp[40])
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j+1] = 1;
+        	}
+        	else
+        	{
+        		data_wm_dst[200*((2*i)+1)+2*j+1] = 0;
+        	}
+        }
+    }
+    wm_iArnold(data_wm_dst);
+    wm_iArnold(data_wm_dst);
+    wm_iArnold(data_wm_dst);
+    array2image200(image_wm_dst,data_wm_dst);
+    //image_wm_dst.display();
+
+}
+void image_putwm02(Image image_src,Image &image_dst,Image image_wm_src)
+{
+	uchar data_src[800*800];
+	uchar data_dst[800*800];
+	bool data_wm_src[200*200];
+
+	ImageRgb2Ycbcr(image_src);
+	ImageRgb2Ycbcr(image_dst);
+
+	uchar data_dir_src[800*800];
+	uchar data_dir_dst[800*800];
+	bool data_dirwm_src[200*200];
+
+	ImageY2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
+
+	image_addwm02(data_src,data_dst,data_wm_src);
+
+	array2imageDst(image_dst,data_dst);
+
+	ImageYcbcr2Rgb(image_src);
+	ImageYcbcr2Rgb(image_dst);
+}
+void image_getwm02(Image image_src,Image image_dst,Image &image_wm_dst)
+{
+
+
+	image_src.resize(Geometry(800,800));
+	image_dst.resize(Geometry(800,800));
+	ImageRgb2Ycbcr(image_dst);
+	ImageRgb2Ycbcr(image_src);
+
+	uchar data_dst[800*800];
+	uchar data_src[800*800];
+	bool data_wm_dst[200*200];
+
+	image2array800(image_src,data_src);
+	image2array800(image_dst,data_dst);
+	image2array200(image_wm_dst,data_wm_dst);
+
+    dct_data_t image_block_input[8*8];
+    dct_data_t image_block_tmp[8*8];
+
+    dct_data_t image_block_input_ref[8*8];
+    dct_data_t image_block_tmp_ref[8*8];
+    init_fdct(); // needed by REF  FDCT
+    init_idct(); // needed by WANG IDCT
+    // 1-6/2-5 3-4/4-3 3-3/4-4 5-2/6-1 --> 5/12 19/26 18/27 33/40 : 1 2 3 4
+    for(int i = 0;i < 100;i++)
+    {
+        for(int j = 0;j < 100;j++)
+        {
+        	for(int m = 0;m < 8;m ++)
+        	{
+            	for(int n = 0;n < 8;n ++)
+            	{
+            		image_block_input[8*m+n] = data_dst[(8*i+m)*800+8*j+n];//2*data_dst[(8*i+m)*800+8*j+n] - 255;
+            		image_block_input_ref[8*m+n] = data_src[(8*i+m)*800+8*j+n];
+            	}
+            }
+        	top_fdct(image_block_input,image_block_tmp);
+        	top_fdct(image_block_input_ref,image_block_tmp_ref);
+
+    		if(image_block_tmp[7]>image_block_tmp_ref[7])
+    			data_wm_dst[200*(2*i)+2*j] = 1;else data_wm_dst[200*(2*i)+2*j] = 0;
+    		if(image_block_tmp[21]>image_block_tmp_ref[21])
+    			data_wm_dst[200*(2*i)+2*j+1] = 1;else data_wm_dst[200*(2*i)+2*j+1] = 0;
+    		if(image_block_tmp[42]>image_block_tmp_ref[42])
+    			data_wm_dst[200*(2*i+1)+2*j] = 1;else data_wm_dst[200*(2*i+1)+2*j] = 0;
+    		if(image_block_tmp[56]>image_block_tmp_ref[56])
+    			data_wm_dst[200*(2*i+1)+2*j+1] = 1;else data_wm_dst[200*(2*i+1)+2*j+1] = 0;
+        }
+    }
+    wm_iArnold(data_wm_dst);
+    wm_iArnold(data_wm_dst);
+    wm_iArnold(data_wm_dst);
+    array2image200(image_wm_dst,data_wm_dst);
+    //image_wm_dst.display();
+
 }
 
 void wm2_add(Image image_src,Image image_wm,Image &image_dst)

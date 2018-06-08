@@ -8,12 +8,12 @@ void testbench(Image image_src, Image image_dst, Image image_wm_src)
 {
 	getPSNR(&image_src, &image_dst);
 
-	NoAttack(&image_dst, &image_wm_src);
-	GaussNoise(&image_dst, &image_wm_src);
-	ImpulseNoiseAttack(&image_dst, &image_wm_src);
-	Rotate(&image_dst, &image_wm_src);
-	Shear(&image_dst, &image_wm_src);
+	NoAttack(&image_dst, &image_wm_src, image_src);
+	GaussNoise(&image_dst, &image_wm_src, image_src);
+	ImpulseNoiseAttack(&image_dst, &image_wm_src, image_src);
+	Rotate(&image_dst, &image_wm_src, image_src);
+	Shear(&image_dst, &image_wm_src, image_src);
 	//Compress(&image_dst, &image_wm_src);
 	//TransformFormat(&image_dst, &image_wm_src);
-	Narrowing(&image_dst, &image_wm_src);
+	Narrowing(&image_dst, &image_wm_src, image_src);
 	}

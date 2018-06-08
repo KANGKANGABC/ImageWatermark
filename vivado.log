@@ -1,0 +1,202 @@
+#-----------------------------------------------------------
+# Vivado v2017.1_sdx (64-bit)
+# SW Build 1915620 on Thu Jun 22 17:54:59 MDT 2017
+# IP Build 1908669 on Thu Jun 22 19:20:41 MDT 2017
+# Start of session at: Tue Jun  5 19:01:43 2018
+# Process ID: 15013
+# Current directory: /media/lab302/347d434a-189f-43cc-baf7-e73f9cd9728a/ZhaoKang/workspace/hls/project_dctTest_v1.0/dct_hls
+# Command line: vivado
+# Log file: /media/lab302/347d434a-189f-43cc-baf7-e73f9cd9728a/ZhaoKang/workspace/hls/project_dctTest_v1.0/dct_hls/vivado.log
+# Journal file: /media/lab302/347d434a-189f-43cc-baf7-e73f9cd9728a/ZhaoKang/workspace/hls/project_dctTest_v1.0/dct_hls/vivado.jou
+#-----------------------------------------------------------
+INFO: [Common 17-1460] Use of init.tcl in /media/lab302/347d434a-189f-43cc-baf7-e73f9cd9728a/ZhaoKang/software/xilinx/SDx/2017.1/Vivado/scripts/init.tcl is deprecated. Please use Vivado_init.tcl 
+Sourcing tcl script '/media/lab302/347d434a-189f-43cc-baf7-e73f9cd9728a/ZhaoKang/software/xilinx/SDx/2017.1/Vivado/scripts/init.tcl'
+16 Beta devices matching pattern found, 0 enabled.
+Loaded SDSoC Platform Tcl Library
+start_gui
+open_project /media/lab302/347d434a-189f-43cc-baf7-e73f9cd9728a/ZhaoKang/workspace/vivado/project_smartL_v1.0/project_smartL_v1.0.xpr
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/media/lab302/347d434a-189f-43cc-baf7-e73f9cd9728a/ZhaoKang/software/xilinx/SDx/2017.1/Vivado/data/ip'.
+open_project: Time (s): cpu = 00:00:10 ; elapsed = 00:00:07 . Memory (MB): peak = 6181.738 ; gain = 60.953 ; free physical = 351 ; free virtual = 12383
+update_compile_order -fileset sources_1
+ls
+WARNING: [Common 17-259] Unknown Tcl command 'ls' sending command to the OS shell for execution. It is recommended to use 'exec' to send the command to the OS shell.
+1.png
+2.png
+3.png
+4.png
+5.png
+6.png
+7.png
+8.png
+9.png
+a01.png
+a02.png
+a03.png
+addwm.cpp
+addwm.h
+attack.cpp
+attack.h
+dct_coeff_table.h
+dct.h
+evaluate.cpp
+evaluate.h
+fdctref.cpp
+my_dct.cpp
+README.md
+shift_dct.cpp
+testbench.cpp
+testbench.h
+top.cpp
+top.h
+top_test.cpp
+top_test.h
+vivado.jou
+vivado.log
+vivado_pid15013.str
+wang_fdct.cpp
+水印01.png
+水印02.png
+水印03.png
+cd ..
+ls
+WARNING: [Common 17-259] Unknown Tcl command 'ls' sending command to the OS shell for execution. It is recommended to use 'exec' to send the command to the OS shell.
+1.png
+2.png
+3.png
+4.png
+5.png
+6.png
+7.png
+8.png
+9.png
+a01.png
+a02.png
+a03.png
+dct_hls
+dct_hls0518.tar.gz
+Debug
+solution1
+vivado_hls.app
+cd
+ls
+WARNING: [Common 17-259] Unknown Tcl command 'ls' sending command to the OS shell for execution. It is recommended to use 'exec' to send the command to the OS shell.
+AMDAPPSDK-3.0
+Desktop
+Documents
+Downloads
+examples.desktop
+logo.gif
+Music
+Pictures
+Public
+Templates
+Videos
+vivado_25962.backup.jou
+vivado_25962.backup.log
+vivado_3931.backup.jou
+vivado_3931.backup.log
+vivado.jou
+vivado.log
+vivado_pid25962.zip
+ls
+WARNING: [Common 17-259] Unknown Tcl command 'ls' sending command to the OS shell for execution. It is recommended to use 'exec' to send the command to the OS shell.
+AMDAPPSDK-3.0
+Desktop
+Documents
+Downloads
+examples.desktop
+logo.gif
+Music
+Pictures
+Public
+Templates
+Videos
+vivado_25962.backup.jou
+vivado_25962.backup.log
+vivado_3931.backup.jou
+vivado_3931.backup.log
+vivado.jou
+vivado.log
+vivado_pid25962.zip
+cd ..
+ls
+WARNING: [Common 17-259] Unknown Tcl command 'ls' sending command to the OS shell for execution. It is recommended to use 'exec' to send the command to the OS shell.
+lab302
+cd /media/lab302/347d434a-189f-43cc-baf7-e73f9cd9728a/ZhaoKang/workspace/hls/project_dctTest_v1.0/solution1/sim/verilog/
+ls
+WARNING: [Common 17-259] Unknown Tcl command 'ls' sending command to the OS shell for execution. It is recommended to use 'exec' to send the command to the OS shell.
+AESL_automem_dst.v
+AESL_automem_src.v
+AESL_automem_wm.v
+check_sim.tcl
+idctrow.v
+image_addwm05_amaDeQ.v
+image_addwm05_amaeOg.v
+image_addwm05_amafYi.v
+image_addwm05_amag8j.v
+image_addwm05_amahbi.v
+image_addwm05_amaIfE.v
+image_addwm05_amakbM.v
+image_addwm05_am_pcA.v
+image_addwm05_am_qcK.v
+image_addwm05_am_rcU.v
+image_addwm05.autotb.v
+image_addwm05_iclip_rom.dat
+image_addwm05_iclip.v
+image_addwm05_imazec.v
+image_addwm05_locyd2.v
+image_addwm05_macdEe.v
+image_addwm05_macEe0.v
+image_addwm05_macFfa.v
+image_addwm05_macGfk.v
+image_addwm05_macHfu.v
+image_addwm05_macibs.v
+image_addwm05_macjbC.v
+image_addwm05_macJfO.v
+image_addwm05_macKfY.v
+image_addwm05_maclbW.v
+image_addwm05_macmb6.v
+image_addwm05_macncg.v
+image_addwm05_macocq.v
+image_addwm05_mactde.v
+image_addwm05_macudo.v
+image_addwm05_macvdy.v
+image_addwm05_macwdI.v
+image_addwm05_macxdS.v
+image_addwm05_mulCeG.v
+image_addwm05_mulsc4.v
+image_addwm05.performance.result.transaction.xml
+image_addwm05.prj
+image_addwm05.result.lat.rb
+image_addwm05.tcl
+image_addwm05_urebkb.v
+image_addwm05_urecud.v
+image_addwm05.v
+image_addwm05.wcfg
+image_addwm05.wdb
+run_sim.tcl
+run_xsim.sh
+sim.sh
+wang_dct_1d.v
+webtalk_14724.backup.jou
+webtalk_14724.backup.log
+webtalk.jou
+webtalk.log
+wm_fArnold.v
+wm_fArnold_wm_dst.v
+xelab.log
+xelab.pb
+xsim.dir
+xsim.jou
+xsim.log
+open_wave_database image_addwm05.wdb
+simulation_1
+open_wave_config image_addwm05.wcfg
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+exit
+INFO: [Common 17-206] Exiting Vivado at Wed Jun  6 10:09:40 2018...

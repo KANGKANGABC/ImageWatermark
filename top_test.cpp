@@ -78,6 +78,7 @@ int main(void)
 	Image image_dst;
 	Image image_wm_src;
 	Image image_wm_dst;
+	Image image_dirwm_dst;
 
 	try {
 		  cout << " PSNR NoAttack GaussNoise(0.01) ImpulseNoise(0.01) Rotate(10') Shear(300*200) Narrowing(400*400)" << endl;
