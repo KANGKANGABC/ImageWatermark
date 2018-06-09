@@ -2,6 +2,74 @@
 #include "top.h"
 #include <iostream>
 
+void ImageRgb2Ycbcr(Image &image_src)
+{
+    int w = image_src.columns();
+    int h = image_src.rows();
+    MagickCore::Quantum *pixels_src = image_src.getPixels(0, 0, w, h);
+    int row = 0;
+    int column = 0;
+    unsigned offset_src = image_src.channels() * (w * row + column);
+    int r,g,b;
+    uchar y,cb,cr;
+    for(long i = 0;i < w;i++)
+    {
+    	for(long j = 0;j < h;j++)
+    	{
+    		row = i;
+    		column = j;
+    		offset_src = image_src.channels() * (w * row + column);
+    		r = pixels_src[offset_src + 0]*255/65535;
+    		g = pixels_src[offset_src + 1]*255/65535;
+    		b = pixels_src[offset_src + 2]*255/65535;
+    		y = (uchar)((YCbCrYRI * r + YCbCrYGI * g + YCbCrYBI * b + HalfShiftValue) >> Shift);
+    		cb = (uchar)( 128 + ( (YCbCrCbRI * r + YCbCrCbGI * g + YCbCrCbBI * b+ HalfShiftValue) >> Shift));
+    		cr = (uchar) (128+( (YCbCrCrRI * r + YCbCrCrGI * g + YCbCrCrBI * b + HalfShiftValue) >> Shift));
+    		pixels_src[offset_src + 0] = y*65535/255;
+    		pixels_src[offset_src + 1] = cb*65535/255;
+    		pixels_src[offset_src + 2] = cr*65535/255;
+    		//printf("%d ",y);
+    	}
+    	//printf("\r\n");
+    }
+
+    image_src.syncPixels();
+}
+
+void ImageYcbcr2Rgb(Image &image_src)
+{
+    int w = image_src.columns();
+    int h = image_src.rows();
+    MagickCore::Quantum *pixels_src = image_src.getPixels(0, 0, w, h);
+    int row = 0;
+    int column = 0;
+    unsigned offset_src = image_src.channels() * (w * row + column);
+    int r,g,b,y,cb,cr;
+    for(long i = 0;i < w;i++)
+    {
+    	for(long j = 0;j < h;j++)
+    	{
+    		row = i;
+    		column = j;
+    		offset_src = image_src.channels() * (w * row + column);
+    		y = pixels_src[offset_src + 0]*255/65535;
+    		cb = pixels_src[offset_src + 1]*255/65535 - 128;
+    		cr = pixels_src[offset_src + 2]*255/65535 - 128;
+    		r = y + ((RGBRCrI * cr + HalfShiftValue) >> Shift);
+    		g = y + ((RGBGCbI * cb + RGBGCrI * cr+ HalfShiftValue) >> Shift);
+    		b = y + ((RGBBCbI * cb + HalfShiftValue) >> Shift);
+    		if (r > 255) r = 255; else if (r < 0) r = 0;
+    		if (g > 255) g = 255; else if (g < 0) g = 0;
+    		if (b > 255) b = 255; else if (b < 0) b = 0;
+    		pixels_src[offset_src + 0] = (uchar)r*65535/255;
+    		pixels_src[offset_src + 1] = (uchar)g*65535/255;
+    		pixels_src[offset_src + 2] = (uchar)b*65535/255;
+
+    	}
+    }
+    image_src.syncPixels();
+}
+
 void Image2Array(Image image_src,Image image_dst,Image image_wm,
 uchar data_src[800*800],uchar data_dst[800*800],bool data_wm[200*200])//Image Pre Processing
 {
@@ -88,7 +156,7 @@ void image_getwm04(Image image_dst,Image &image_wm_dst)
         	{
             	for(int n = 0;n < 8;n ++)
             	{
-            		image_block_input[8*m+n] = data_dst[(8*i+m)*800+8*j+n];
+            		image_block_input[8*m+n] = 2*data_dst[(8*i+m)*800+8*j+n] - 256;
             	}
             }
         	top_fdct(image_block_input,image_block_tmp);
