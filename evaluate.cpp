@@ -57,11 +57,11 @@ double getNC(Image* src, Image* extrwtm)
       offset1 = image1.channels() * (w * row + column);
       if (pixels[offset1 + 3] > 40000)
       {
-    	  pixels[offset1 + 3] = 50000;
+    	  pixels[offset1 + 3] = 0;
       }
       else
       {
-    	  pixels[offset1 + 3] = 0;
+    	  pixels[offset1 + 3] = 65535;
       }
     }
   }

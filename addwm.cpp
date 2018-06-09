@@ -28,6 +28,9 @@ void ImageRgb2Ycbcr(Image &image_src)
     		pixels_src[offset_src + 0] = y*65535/255;
     		pixels_src[offset_src + 1] = cb*65535/255;
     		pixels_src[offset_src + 2] = cr*65535/255;
+//    		pixels_src[offset_src + 0] = y*65535/255;
+//    		pixels_src[offset_src + 1] = y*65535/255;
+//    		pixels_src[offset_src + 2] = y*65535/255;
     	}
     }
 
@@ -366,7 +369,9 @@ void image_getwm05(Image image_dst,Image &image_wm_dst)
     wm_iArnold(data_wm_dst);
     wm_iArnold(data_wm_dst);
     array2image200(image_wm_dst,data_wm_dst);
+#ifdef debug
     image_wm_dst.display();
+#endif
 
 }
 void image_putwm06(Image image_src,Image &image_dst,Image image_wm_src)
@@ -610,10 +615,10 @@ void array2image200(Image &image,bool data[200*200])
     		row = i;
     		column = j;
     		offset = image.channels() * (w * row + column);
-    		pixels[offset + 0] = data[200*i+j]*50000;
-    		pixels[offset + 1] = data[200*i+j]*50000;
-    		pixels[offset + 2] = data[200*i+j]*50000;
-    		pixels[offset + 3] = 50000;
+    		pixels[offset + 0] = 65535 - data[200*i+j]*65535;
+    		pixels[offset + 1] = 65535 - data[200*i+j]*65535;
+    		pixels[offset + 2] = 65535 - data[200*i+j]*65535;
+    		pixels[offset + 3] = 65535;
         }
     }
     image.syncPixels();
@@ -1020,6 +1025,7 @@ void image_putwm02(Image image_src,Image &image_dst,Image image_wm_src)
 
 	ImageRgb2Ycbcr(image_src);
 	ImageRgb2Ycbcr(image_dst);
+	//image_src.display();
 
 	uchar data_dir_src[800*800];
 	uchar data_dir_dst[800*800];
@@ -1027,8 +1033,13 @@ void image_putwm02(Image image_src,Image &image_dst,Image image_wm_src)
 
 	ImageY2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
 
-	array2image200(image_wm_src,data_wm_src);
-	image_wm_src.display();
+//	array2image200(image_wm_src,data_wm_src);
+//	image_wm_src.display();
+//	wm_iArnold(data_wm_src);
+//	wm_iArnold(data_wm_src);
+//	wm_iArnold(data_wm_src);
+//	array2image200(image_wm_src,data_wm_src);
+//	image_wm_src.display();
 
 	image_addwm02(data_src,data_dst,data_wm_src);
 
@@ -1091,6 +1102,9 @@ void image_getwm02(Image image_src,Image image_dst,Image &image_wm_dst)
     wm_iArnold(data_wm_dst);
     wm_iArnold(data_wm_dst);
     array2image200(image_wm_dst,data_wm_dst);
+#ifdef debug
+    image_wm_dst.display();
+#endif
     //image_wm_dst.display();
 
 }

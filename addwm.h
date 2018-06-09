@@ -11,7 +11,8 @@
 using namespace Magick;
 using namespace std;
 
-#define addwm02
+#define addwm05
+#define debug
 
 void wm1_add(Image image_src,Image image_wm,Image &image_dst);
 void wm1_detect(Image image_src,Image image_wm);

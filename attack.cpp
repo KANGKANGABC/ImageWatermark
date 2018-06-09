@@ -22,6 +22,9 @@ void GaussNoise(Image* src, Image* wm_src, Image ref)
 	Image img_adwm = *src;
 	Image wm_extr = *wm_src;
 	img_adwm.addNoise(GaussianNoise,0.01);
+#ifdef debug
+	img_adwm.display();
+#endif
 #ifdef addwm02
 	image_getwm02(ref,img_adwm,wm_extr);
 #endif
@@ -38,6 +41,9 @@ void ImpulseNoiseAttack(Image* src, Image* wm_src, Image ref)
 	Image img_adwm = *src;
 	Image wm_extr = *wm_src;
 	img_adwm.addNoise(ImpulseNoise,0.01);
+#ifdef debug
+	img_adwm.display();
+#endif
 #ifdef addwm02
 	image_getwm02(ref,img_adwm,wm_extr);
 #endif
@@ -55,6 +61,9 @@ void Rotate(Image* src, Image* wm_src, Image ref)
 	Image wm_extr = *wm_src;
 	img_adwm.rotate(30);
 	img_adwm.crop(Geometry(800,800));
+#ifdef debug
+	img_adwm.display();
+#endif
 #ifdef addwm02
 	image_getwm02(ref,img_adwm,wm_extr);
 #endif
@@ -70,13 +79,16 @@ void Shear(Image* src, Image* wm_src, Image ref)
 {
 	Image img_adwm = *src;
 	Image wm_extr = *wm_src;
-	for (int x=0;x<160;x++)		//height
+	for (int x=221;x<579;x++)		//height
 	{
-		for (int y=0;y<800;y++)		//width
+		for (int y=221;y<579;y++)		//width
 		{
 			img_adwm.pixelColor(y,x,Color(0,0,0,0));
 		}
 	}
+#ifdef debug
+	img_adwm.display();
+#endif
 #ifdef addwm02
 	image_getwm02(ref,img_adwm,wm_extr);
 #endif
@@ -92,15 +104,22 @@ void Compress(Image* src, Image* wm_src, Image ref)
 {
 	Image img_adwm = *src;
 	Image wm_extr = *wm_src;
-	img_adwm.compressType(UndefinedCompression);
-	img_adwm.write("img_adm_src.png");
-	//img_adwm.read("img_adm_dst.jpg");
+	img_adwm.write("img_adm.jpg");
+	img_adwm.read("img_adm.jpg");
+	img_adwm.quality(50);
+	img_adwm.write("img_adm_dst.jpg");
+	img_adwm.read("img_adm_dst.jpg");
+#ifdef debug
+	img_adwm.display();
+#endif
 #ifdef addwm02
 	image_getwm02(ref,img_adwm,wm_extr);
 #endif
 #ifdef addwm05
 	image_getwm05(img_adwm,wm_extr);
 #endif
+	cout<<" ";
+	getPSNR(&ref,&img_adwm);
 	getNC(wm_src, &wm_extr);
 	}
 
@@ -127,6 +146,9 @@ void Narrowing(Image* src, Image* wm_src, Image ref)
 	Image img_adwm = *src;
 	Image wm_extr = *wm_src;
 	img_adwm.resize(Geometry(640,640));
+#ifdef debug
+	img_adwm.display();
+#endif
 #ifdef addwm02
 	image_getwm02(ref,img_adwm,wm_extr);
 #endif

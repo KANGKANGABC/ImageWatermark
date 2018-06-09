@@ -83,7 +83,7 @@ int main(void)
 	try {
 		  cout << " PSNR NoAttack GaussNoise(0.01) ImpulseNoise(0.01) Rotate(10') Shear(300*200) Compress Narrowing(400*400)" << endl;
 
-		  for (int i = 0; i < 9; i++)
+		  for (int i = 0; i < 1; i++)
 		  {
 			  int j = 0;
 			  GetImage(image_src,image_dst,image_wm_src,image_wm_dst,i,j);
@@ -94,7 +94,7 @@ int main(void)
 #ifdef addwm05
 			  image_putwm05(image_src,image_dst,image_wm_src);
 #endif
-			  image_dst.display();
+			  //image_dst.display();
 			  testbench(image_src, image_dst, image_wm_src);
 
 		  }

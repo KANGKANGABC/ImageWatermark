@@ -504,7 +504,7 @@ void swap_sint(signed short int  &a,signed short int  &b)
 
 void enlarge_sint(signed short int  &a,signed short int  &b)//增大两值的差
 {
-	int alpha = 10;
+	int alpha = 0;
 	if((a+alpha)>32767)
 		a = 32767;
 	else
