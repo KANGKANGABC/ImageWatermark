@@ -366,7 +366,7 @@ void image_getwm05(Image image_dst,Image &image_wm_dst)
     wm_iArnold(data_wm_dst);
     wm_iArnold(data_wm_dst);
     array2image200(image_wm_dst,data_wm_dst);
-    //image_wm_dst.display();
+    image_wm_dst.display();
 
 }
 void image_putwm06(Image image_src,Image &image_dst,Image image_wm_src)
@@ -611,6 +611,9 @@ void array2image200(Image &image,bool data[200*200])
     		column = j;
     		offset = image.channels() * (w * row + column);
     		pixels[offset + 0] = data[200*i+j]*50000;
+    		pixels[offset + 1] = data[200*i+j]*50000;
+    		pixels[offset + 2] = data[200*i+j]*50000;
+    		pixels[offset + 3] = 50000;
         }
     }
     image.syncPixels();
@@ -1023,6 +1026,9 @@ void image_putwm02(Image image_src,Image &image_dst,Image image_wm_src)
 	bool data_dirwm_src[200*200];
 
 	ImageY2Array(image_src,image_dst,image_wm_src,data_src,data_dst,data_wm_src);
+
+	array2image200(image_wm_src,data_wm_src);
+	image_wm_src.display();
 
 	image_addwm02(data_src,data_dst,data_wm_src);
 

@@ -13,7 +13,7 @@ void testbench(Image image_src, Image image_dst, Image image_wm_src)
 	ImpulseNoiseAttack(&image_dst, &image_wm_src, image_src);
 	Rotate(&image_dst, &image_wm_src, image_src);
 	Shear(&image_dst, &image_wm_src, image_src);
-	//Compress(&image_dst, &image_wm_src);
+	Compress(&image_dst, &image_wm_src,image_src);
 	//TransformFormat(&image_dst, &image_wm_src);
 	Narrowing(&image_dst, &image_wm_src, image_src);
 	}
